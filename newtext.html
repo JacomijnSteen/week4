@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>nieuwe tekst invoeren in blog met database </title>
+   <!-- <link rel="stylesheet" type="text/CSS" href="blog.css"> -->
+  </head>
+
+  <body>
+    <section>
+        <br/><br/><br/>
+      <form action="blog.php" method="POST" class="inputtext">
+          <input type="text" name="fname" placeholder="voornaam">
+                <br/><br/><br/>
+          <input type="text" name="lname" placeholder="achternaam">
+                <br/><br/><br/>
+          <input type="text" name="titel" placeholder="titel">
+                <br/><br/><br/>
+         
+        bericht<br/>
+        <textarea type="text" cols="100" rows="20" name="blogbericht"></textarea>
+                 <br/>
+     
+      
+      <p class="categorie">categorie waaronder dit artikel of bericht valt</p>
+
+      <select name="catkeuze" class="catkeuze">
+        <option value="<?php echo $row['name']; ?>" > <?php echo $row['name']; ?> </option>
+      <!--  <option value=echo $row['id']> echo $row['name'] </option> -->
+      </select>
+
+  <!----<input type="checkbox" name="thema" value="kunst">kunst<br/>
+        <input type="checkbox" name="thema" value="sport">sport<br/>
+        <input type="checkbox" name="thema" value="programmeren">programmeren<br/>
+        <input type="checkbox" name="thema" value="diversen">diversen<br/>   -->
+         <br/>
+
+        <input type="submit" name="submit" value="Toevoegen">
+      </form>
+    </div>
+
+  </body>
+</html>
