@@ -32,7 +32,7 @@
 
         if ($statement->execute()) { 
             
-            ?>cd 
+            ?>
         <div class="tabel">
             <table border='1px;'> 
                 <thead>
@@ -72,7 +72,10 @@
         }else {
                 echo "query niet uitgevoerd";
         } 
-        
+    }
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }        
         ?>
 
 
@@ -80,6 +83,7 @@
         <div>
                 <br/>
             <a href="newtext.php"  class ="newtext.php" >Voeg een nieuw bericht of artikel toe</a> 
+                <br/>
         </div>  
 
 
@@ -117,11 +121,12 @@
         <?php 
 
 //Ik wil nu de table bekijken geselecteerd op 1 catagorie. categorie hierboven geselecteerd
+//if ($_SERVER["REQUEST_METHOD"] == "POST") {   
+//if(isset $_POST){ 
+    if (!empty($_POST["bepcatopvr"])) {
          $catid=$_POST['bepcatopvr'];
-
-      
         
-         //Ik wil nu de uitgedunde table bekijken
+ //Ik wil nu de uitgedunde table bekijken
         $sql2 = "SELECT * FROM blogtext WHERE category_id=:category ORDER BY datum DESC";
  
         $statement = $connection->prepare($sql2);
@@ -166,22 +171,31 @@
             </table>
         </div>       
             <?php
+        
+        
         }else {
                 echo "query niet uitgevoerd";
         } 
         
     }
+    ?>  
 
-    catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }   
+    <div>
+            <br/>
+        <form  method ="POST" action="blog.php" >
+            <h3> Voeg een nieuwe categorie voor uw texten toe: </h3>
+            <input type="text" name="newCat">
+            <input type = "submit" name="submit">
+        </form>
+            <br/>
+    </div>
+
+    <?php
+// Close connection
+         $connection = null; 
+            $connection = null; 
+         $connection = null; 
     ?>
 
-        
-
-        <?php
-    // Close connection
-            $connection = null; 
-        ?>
     </body>
 </html>

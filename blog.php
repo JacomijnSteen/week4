@@ -1,12 +1,5 @@
 <?php
 
-  //heb ik de post value?
-  //zo ja, voeg dan een where aan de query toe
-
-
-
-
-
   //fouten melden!!
     error_reporting(1);
     ini_set('display_errors',1);
@@ -17,6 +10,26 @@
     $dsn = "mysql:dbname=$db;host=$localhost";
     $user_name = "root";
     $pass_word = "";  
+
+//nieuwe categorie toevoegen
+    
+    $connection = new PDO($dsn, $user_name, $pass_word);
+    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+      try {       
+        $newCat=$_POST['newCat'];
+
+        $sql4 = "INSERT INTO categories (name)
+                VALUES ('$newCat')";
+           
+        $connection->exec($sql4);         
+      }
+      catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+      }    
+    
+    echo "Je nieuwe categorienaam is toegevoegd";  
+
 
   //variabelen definieren
   //geplaatst bericht
@@ -48,7 +61,8 @@
     return $data;
   }
 
-  //nieuwe text opslaan met aangevinkte categorie keuze erbij
+
+ //nieuwe text opslaan met aangevinkte categorie keuze erbij
  
   $connection = new PDO($dsn, $user_name, $pass_word);
   $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -84,6 +98,8 @@
       echo "Error: " . $e->getMessage();
     }    
  
+
+
     // Close connection
 $connection = null; 
 
