@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>nieuwe tekst invoeren in blog met database </title>
-   <!-- <link rel="stylesheet" type="text/CSS" href="blog.css"> -->
+    <title>nieuwe tekst invoeren in blog database </title>
+    <link rel="stylesheet" type="text/CSS" href="newtext.css"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
 
   <body>
+    <div class = "bovenregel">
+      <p><h2>Plaats hier een nieuw bericht op mijn blog</h2></p>
+    </div>  
     <?php
 //fouten melden!!
   error_reporting(1);
@@ -13,24 +17,23 @@
    ?>
     
     <section>
-        <br/><br/><br/>
+        <br/>
         <form action="newtext.php" method="POST" class="inputtext">
-          <input type="text" name="fname" placeholder="voornaam">
-                <br/><br/><br/>
-          <input type="text" name="lname" placeholder="achternaam">
+          <input type="text" name="name" placeholder="naam">
                 <br/><br/><br/>
           <input type="text" name="titel" placeholder="titel">
                 <br/><br/><br/>
          
         bericht<br/>
-        <textarea type="text" cols="100" rows="20" name="blogbericht"></textarea>
+        <textarea type="text" cols="150" rows="10" name="blogbericht"></textarea>
                  <br/>
 
-        <p class="categorie">categorie waaronder dit artikel of bericht valt</p>
+        <p class="categorieNewText"><h3>selecteer een categorie waaronder dit artikel of bericht valt</h3></p>
 
         <?php
-    //bij opslaan van artikel  moet ik voor de keuze van de categorie de id van betreffende categorie toevoegen.
-               
+
+//bij opslaan van artikel  checkbox weergeven met categorien waar het artikel over gaat
+
     include "openConn.php";
         
     try {
@@ -40,20 +43,15 @@
         $sql = "SELECT * FROM categories ORDER BY id ASC";
 
         $result = $connection->query($sql);
-        
-    
+            
         ?>
-
-        <form action="newtext.php" method ="POST" >
-          <select name="catkeuze" class="catkeuze">  
-         <?php
-          foreach ($result as $row) {
-         ?>
-       
-            <option value="<?php echo $row['id']; ?>" > <?php echo $row['name']; ?> </option>
-       
-         <?php
-            }    
+        <form action="newtext.php" method ="POST" class = "checkbox">
+          <?php
+            foreach ($result as $row) {
+          ?>
+           <input type="checkbox"  name="catkeuze[]"  value="<?php echo $row['id'] ?>"><span class="color-white"><?php echo $row['name'] ?></span><br/>
+          <?php   
+          }    
           
     }
     catch(PDOException $e) {
@@ -65,27 +63,19 @@
         </form>
     </section>
     <?php
-    // Close connection
-    $connection = null; 
   
-    
- 
-   //checken of velden ingevuld zijn.
-      $fname=$_POST['fname'];
-      $lname=$_POST['lname'];
+ //checken of velden ingevuld zijn.
+      $name=$_POST['name'];
       $titel=$_POST['titel'];
-      $datum=$_POST['date'];
       $bericht=$_POST['blogbericht'];
-
-      if(empty($fname) || empty($lname) || empty($titel) || empty($bericht)){
-     
-       echo "naam, titel of bericht is niet ingevuld";
+  
+      if(empty($name) || empty($titel) || empty($bericht)){     
+        echo "naam, titel of bericht is niet ingevuld.";
       }
  
    //de velden naam email en bericht bewapenen tegen hackers inputs
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $fname = schoonmaken($_POST['fname']);
-        $lname = schoonmaken($_POST['lname']);
+        $name = schoonmaken($_POST['name']);
         $titel = schoonmaken($_POST['titel']);
         $bericht = schoonmaken($_POST['blogbericht']);    
       }
@@ -97,34 +87,40 @@
         return $data;
       }
 
-   //nieuwe text opslaan in db met aangevinkte categorie keuze erbij
-   include "openConn.php";
-   try {
-    $connection = new PDO($dsn, $user_name, $pass_word);
-    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);     
+//nieuwe text opslaan in db en de nieuwe id hiervan opvragen (=$resultId)   
 
-      $categorieId = $_POST['catkeuze'];
-
-      $sql1 = "INSERT INTO blogtext (fname, lname, titel, datum, bericht, category_id) 
-              VALUES ('$fname', '$lname', '$titel', NOW() , '$bericht', '$categorieId')";
-           
+      $sql1 = "INSERT INTO blogtext (titel , datum , bericht , name) VALUES ('$titel' , NOW() , '$bericht' , '$name');";
+              
       $result = $connection->exec($sql1);
       
       if($result === 0){
-         $err = $connection->errorInfo();
-         print_r($err);
+        $err = $connection->errorInfo();
+        print_r($err);
       }  
-       
-        echo $continent . "Je bericht is opgeslagen";    
-    }
-    catch(PDOException $e) {
-        echo $sql1 . "<br>" . $e->getMessage();
-    }
-            
-    // Close connection
-    $connection = null; 
 
-       // header('Location:blogtext.php');
+       $resultId = $connection->lastInsertId();
+      
+      if($result === 0){
+          $err = $connection->errorInfo();
+          print_r($err);
+      }
+     
+//in de tabel blogtext_categories opslaan het id van de nieuwe tekst met elke id van de gekozen categorien (=$catkeuze)
+
+      if (array_key_exists('catkeuze', $_POST) && count($_POST['catkeuze']) > 0) {
+        foreach ($_POST['catkeuze'] as $categorieId) {
+          $catKeuzeInvoerSql = "INSERT INTO blogtext_categories (blogtext_id, categories_id)
+                                  VALUES ($resultId, $categorieId)";
+          $result = $connection->exec($catKeuzeInvoerSql);
+        }  
+      }
+
+      if(isset($_POST['blogbericht'])) {
+        header('Location:blogtext.php');
+      }
+    
+// Close connection
+    $connection = null; 
     ?>
   </body>
 </html>

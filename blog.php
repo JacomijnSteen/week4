@@ -1,25 +1,34 @@
 <?php
 
+  // var_dump($_POST); die();
+
   //fouten melden!!
     error_reporting(1);
     ini_set('display_errors',1);
 
-include "createConn.php";
+    include "openConn.php";
 
-       
-     
-  //bericht verwijderen
+    $connection = new PDO($dsn, $user_name, $pass_word);
+    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);     
+
+  // Check connection
+        if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+        }
+
+ //bericht verwijderen
     $brweg = $_POST['id'];
 
-    $rijweg= "DELETE FROM blogtext WHERE id=$brweg";
+    $rijweg= "DELETE FROM blogtext WHERE id='$brweg'";
+
+    $result=$connection->query($rijweg);
       
-    $result=mysqli_conn($conn,$rijweg) 
-      
-      if(mysqli_num_rows($result)>0){
-        while($row = mysqli_fetch_assoc($result)) {
+      if($result>0){
+       
           echo "bericht verwijderd";
-        }
+      
       }else{
+
         echo "bericht niet verwijderd";
       }
 
