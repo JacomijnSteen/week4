@@ -31,9 +31,6 @@
     
     $result4 = $connection->query($sql4);
 
-    $err = $connection->errorInfo();
-    print_r( $err);
-
 
     ?>
         <div class="tabel">

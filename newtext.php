@@ -10,18 +10,12 @@
     <div class = "bovenregel">
       <p><h2>Plaats hier een nieuw bericht op mijn blog</h2></p>
     </div>  
-    <?php
-//fouten melden!!
-  error_reporting(1);
-  ini_set('display_errors',1);
-   ?>
     
-    <section>
         <br/>
-        <form action="newtext.php" method="POST" class="inputtext">
-          <input type="text" name="name" placeholder="naam">
+    <form action="newtext.php" method="POST" class="inputtext">
+       <input type="text" name="name" placeholder="naam">
                 <br/><br/><br/>
-          <input type="text" name="titel" placeholder="titel">
+        <input type="text" name="titel" placeholder="titel">
                 <br/><br/><br/>
          
         bericht<br/>
